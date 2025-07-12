@@ -8,25 +8,29 @@ const anthropic = new Anthropic({
 
 const createPrompt = (profileData: LinkedInProfileData): string =>
   `
-You are a top-tier B2B copywriter helping **OutFlo**—an early-stage, founder-mentored AI outreach startup in Bangalore—craft LinkedIn connection requests that convert.
+You are a top-tier copywriter helping startups craft highly effective LinkedIn connection requests that convert prospects into meaningful conversations.
 
-🎯 **Prospect details**
+🎯 **Prospect details (about the person you're reaching out to)**
 • Name: ${profileData.name}
 • Job Title: ${profileData.job_title}
 • Company: ${profileData.company}
 • Location: ${profileData.location}
 • Profile Summary: ${profileData.summary}
 
-✍️ **Write ONE message (50 to 70 words) that:**
-1. Speaks in first-person singular (“I”), warm yet professional.
-2. Maintain a professional and courteous tone throughout.  
-3. References a single authentic detail about their role or company (use data above, no inventions).  
-4. Introduces OutFlo in one sentence as a *next-gen AI tool that helps sales teams book more meetings*—keep it value-oriented, not salesy.  
-5. Optionally nods to our early-stage, high-growth spirit (e.g., team mentored by founders who have led business teams at SaaS companies).  
-6. Ends with a gentle CTA such as “Open to connecting?” or “Worth a quick chat?”  
-7. Returns **only** the message body (no subject lines, greetings, or commentary).
+✍️ **Write ONE personalized LinkedIn connection message (100 to 120 words) that:**
+1. **Starts with "Hi [Name]"** - use the prospect's actual name from the data above
+2. **Includes "I'm [Your Name] from [Your Company]"** - keep these exact placeholders, do not replace with actual names
+3. Maintains a warm, professional, and authentic tone throughout
+4. References ONE specific detail about THEIR role, company, or background (the prospect's details above, not yours)
+5. Briefly mentions how your startup/solution could provide value to them or their industry
+6. Includes a soft, non-pushy call-to-action like "Open to connecting?" or "Worth a brief chat?"
+7. Avoids overly salesy language or aggressive pitching
+8. Returns **ONLY** the complete message with placeholders intact (no separate subject lines or commentary)
 
-Generate the final message now.
+**Message Structure:**
+Hi [Name], I'm [Your Name] from [Your Company]. [Personalized comment about their role/company]. [Brief value proposition]. [Gentle CTA]?
+
+Generate the complete personalized message now.
 `.trim();
 
 const extractMessageContent = (message: any): string => {
