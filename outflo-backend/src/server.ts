@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import { connectToMongo, config } from './config/database';
 import router from './routes/routes';
 import './models';
@@ -11,7 +12,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? process.env.FRONTEND_URL || 'https://your-frontend-domain.com'
+        ? 'https://outflo-cyan.vercel.app'
         : [
             'http://localhost:3000',
             'http://localhost:3001',
@@ -21,6 +22,34 @@ app.use(
     credentials: true,
   })
 );
+
+if (process.env.NODE_ENV === 'production') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20, 
+    message: {
+      error: 'Too many requests from this IP, please try again later.',
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  
+  app.use('/api/v1/personalized-message', limiter);
+  
+  app.use('/api/v1/personalized-message', (req: Request, res: Response, next: NextFunction) => {
+    const referer = req.get('Referer');
+    const allowedReferers = [
+      'https://outflo-cyan.vercel.app/',
+      'https://outflo-cyan.vercel.app/message-generator'
+    ];
+    
+    if (!referer || !allowedReferers.some(allowed => referer.startsWith(allowed))) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    next();
+  });
+}
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
